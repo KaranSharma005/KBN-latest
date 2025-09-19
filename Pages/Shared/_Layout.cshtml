@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@using KBN.Models;
+@inject SignInManager<ApplicationUser> SignInManager
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -7,91 +9,47 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/KBN.styles.css" asp-append-version="true" />
-    <style>
-        body {
-            background-color: #f8f9fa;
-            color: #212529;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
-        /* Navbar */
-        .navbar {
-            background: linear-gradient(90deg, #2575fc 0%, #6a11cb 100%);
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-
-            .navbar .navbar-brand {
-                font-weight: bold;
-                color: #fff;
-                font-size: 1.5rem;
-            }
-
-            .navbar .nav-link {
-                color: #fff;
-                transition: color 0.3s;
-            }
-
-                .navbar .nav-link:hover {
-                    color: #ffe600;
-                }
-
-            /* Login/Register links in navbar */
-            .navbar .nav-item .btn {
-                color: #fff;
-                border-radius: 0.5rem;
-                font-weight: 500;
-                transition: all 0.3s;
-            }
-
-                .navbar .nav-item .btn:hover {
-                    background-color: rgba(255,255,255,0.2);
-                    color: #fff;
-                }
-
-        /* Footer */
-        .footer {
-            background-color: #fff;
-            text-align: center;
-            font-size: 0.9rem;
-            color: #6c757d;
-        }
-    </style>
+   
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-dark mb-3">
-            <div class="container">
-                <a class="navbar-brand" asp-area="" asp-page="/Index">KBN</a>
-
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
-                        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <nav class="top-navbar navbar navbar-expand-sm navbar-light">
+            <div class="container-fluid">
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">RoleBasedAuthentication</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#topNavbarContent" aria-controls="topNavbarContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
 
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="navbar-nav ms-auto mb-2 mb-sm-0 align-items-center">
-                        <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" asp-area="" asp-page="/Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-page="/About">About</a>
-                        </li>
-                        <li class="nav-item ms-2">
-                            <partial name="_LoginPartial" />
-                        </li>
-                    </ul>
+                <div class="collapse navbar-collapse" id="topNavbarContent">
+                    <partial name="_LoginPartial" />
                 </div>
             </div>
         </nav>
     </header>
 
-    <div class="container py-5">
+    @if (SignInManager.IsSignedIn(User))
+    {
+        <div class="sidebar d-flex flex-column">
+            <a class="navbar-brand ms-3 mb-4" asp-area="" asp-page="/Index">KBN</a>
+            <nav class="nav flex-column px-3">
+                @if (SignInManager.IsSignedIn(User))
+                {
+                    <a class="nav-link active" asp-area="" asp-page="/Index">Home</a>
+                    <a class="nav-link" asp-area="" asp-page="/About">About</a>
+                }
+            </nav>
+    </div>
+    }
+
+
+    <div class="main-content">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
     </div>
 
-    <footer class="border-top footer py-3">
+    <footer class="border-top footer">
         <div class="container">
             &copy; 2025 - KBN - <a asp-area="" asp-page="/Privacy" class="text-decoration-none">Privacy</a>
         </div>

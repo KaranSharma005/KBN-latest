@@ -45,3 +45,66 @@ body {
 .card-title {
     color: #333;
 }
+
+
+
+body {
+    background-color: #f8f9fa;
+    color: #212529;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Sidebar */
+.sidebar {
+    margin-top : 55px;
+    height: 91vh;
+    background: linear-gradient(180deg, #2575fc 0%, #6a11cb 100%);
+    padding-top: 1rem;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 120px;
+    color: #fff;
+}
+
+    .sidebar .nav-link {
+        color: #fff;
+        font-weight: 500;
+        margin: 0.2rem 0;
+        transition: color 0.3s;
+    }
+
+        .sidebar .nav-link:hover {
+            color: #ffe600;
+        }
+
+        .sidebar .nav-link.active {
+            font-weight: bold;
+            color: #ffe600;
+        }
+
+/* Adjust main content to accommodate sidebar */
+.main-content {
+    margin-left: 220px;
+    padding: 2rem 1rem;
+}
+
+/* Footer */
+.footer {
+    background-color: #fff;
+    text-align: center;
+    font-size: 0.9rem;
+    color: #6c757d;
+    margin-left: 220px; /* align with main content */
+    padding: 1rem 0;
+}
+
+.top-navbar {
+    background-color: #fff;
+    border-bottom: 1px solid #dee2e6;
+    padding: 0.5rem 1rem;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
