@@ -21,7 +21,7 @@ builder.Services.Configure<EmailSettingsModal>(builder.Configuration.GetSection(
 builder.Services.AddTransient<IEmailSender, EmailSender>();
 
 var app = builder.Build();
-
+//test
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
