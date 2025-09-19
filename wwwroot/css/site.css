@@ -20,3 +20,28 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+body {
+    background: #f8f9fa;
+}
+
+.btn-gradient {
+    background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+    color: #fff; /* ensures text is always white */
+    border: none;
+    transition: all 0.3s ease;
+}
+
+.btn-gradient:hover {
+    filter: brightness(1.15); /* slightly brighter on hover */
+/*    color: #fff;*/
+}
+
+.form-control:focus {
+    border-color: #2575fc;
+    box-shadow: 0 0 0 0.2rem rgba(37, 117, 252, 0.25);
+}
+
+.card-title {
+    color: #333;
+}
