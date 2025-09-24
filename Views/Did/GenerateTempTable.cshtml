@@ -1,0 +1,51 @@
+﻿
+@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model List<string>
+
+<div class="text-black p-3">
+    <div class="d-flex flex-column overflow-auto" style="height: 495px;" id="didtable">
+        @if (Model != null)
+        {
+            <table class="table" id="infodid">
+                <thead>
+                    <tr>
+                        <th>DID</th>
+                        <th>Country</th>
+                        <th>City</th>
+                        <th>Number Type</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            @{
+                                var didstring = item.ToString();
+                                if (didstring.Length != 11)
+                                {
+                                    <td>
+                                        <p >@item</p>
+                                        <p class="text-danger">DID must be of 11 digits</p>
+                                    </td>
+                                }
+                                else
+                                {
+                                    <td>@item</td>
+                                }
+                            }
+                            
+                            <td><input class="form-control" value="United States" name="Country" /></td>
+                            <td><input class="form-control" value="All" name="City" /></td>
+                            <td>Geographic</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+
+    <br />
+    <button class="btn btn-primary float-end" id="saveDids">Add</button>
+</div>

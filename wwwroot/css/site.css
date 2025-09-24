@@ -22,6 +22,9 @@ body {
     flex-direction: column;
 }
 
+.didsection {
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+}
 /* Top Navbar */
 .top-navbar {
     background: rgba(255, 255, 255, 0.95);
@@ -423,3 +426,73 @@ main > * {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     border-color: #667eea;
 }
+
+
+.with-sidebar .main-content,
+.with-sidebar .footer {
+    margin-left: 240px;
+}
+
+.no-sidebar .main-content,
+.no-sidebar .footer {
+    margin-left: 0;
+}
+
+.custom-border-input {
+    border-color: black !important;
+}
+/*
+
+#rows_info_paginate{
+    display : none !important;
+}*/
+
+
+/* Container styling */
+.paginate-list {
+    display: flex;
+    justify-content: center; /* center pagination */
+    align-items: center;
+    list-style: none;
+    padding: 0;
+    margin: 20px 0;
+    gap: 5px; /* spacing between page items */
+}
+
+    /* Individual page items */
+    .paginate-list li {
+        display: inline-block;
+    }
+
+        .paginate-list li a {
+            display: block;
+            padding: 8px 14px;
+            text-decoration: none;
+            color: #007bff; /* Bootstrap primary color */
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+            /* Hover effect */
+            .paginate-list li a:hover {
+                background-color: #007bff;
+                color: #fff;
+                border-color: #007bff;
+            }
+
+        /* Active page */
+        .paginate-list li.active a {
+            background-color: #007bff;
+            color: #fff;
+            border-color: #007bff;
+            pointer-events: none; /* disable click */
+        }
+
+        /* Disabled page (like prev/next when unavailable) */
+        .paginate-list li.disabled a {
+            color: #6c757d;
+            pointer-events: none;
+            background-color: #fff;
+            border-color: #dee2e6;
+        }

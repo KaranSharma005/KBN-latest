@@ -1,0 +1,328 @@
+﻿@* 
+@{
+    ViewData["Title"] = "Home page";
+}
+<style>
+
+    .pagination {
+        justify-content: center;
+        margin: 20px 0;
+    }
+
+        .pagination .page-link {
+            color: #007bff;
+            background-color: #fff;
+            border: 1px solid #dee2e6;
+            padding: 8px 12px;
+            margin: 0 2px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+            .pagination .page-link:hover {
+                color: #0056b3;
+                background-color: #e9ecef;
+                border-color: #adb5bd;
+                text-decoration: none;
+            }
+
+        .pagination .page-item.active .page-link {
+            background-color: #007bff;
+            border-color: #007bff;
+            color: white;
+            font-weight: bold;
+        }
+
+        .pagination .page-item.disabled .page-link {
+            color: #6c757d;
+            background-color: #fff;
+            border-color: #dee2e6;
+            cursor: not-allowed;
+        }
+
+
+</style>
+<div class="container">
+    <div class="d-flex justify-content-end">
+        <button class="btn btn-primary" id="addDidBtn">Add DIDs</button>
+    </div>
+</div>
+<br />
+
+@* Input fields for data filtering *@
+@* <div id="filter-div">
+    <div class="row mb-3">
+        <div class="col mb-3 d-flex gap-2">
+            <input type="text" placeholder="Search DID..." class="form-control" id="didfilter" />
+            <input type="text" placeholder="Search city here..." class="form-control" id="cityfilter" />
+            <input type="text" placeholder="Search country here..." class="form-control" id="countryfilter" />
+            <button type="submit" class="btn btn-primary" id="searchbtn">Search</button>
+            <button class="btn btn-danger" id="resetFilter">Reset</button>
+        </div>
+    </div>
+</div>
+
+@* DID modal *@
+@*<div class="modal fade" data-bs-backdrop='static' id="didModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="ModalLabel">Add DIDs</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="DidDiv">
+                <div class="row didsection">
+                    <div class="col-4 col-md-5" id="didtextareadiv">
+                    </div>
+
+                    <div class="col-8 col-md-7" id="tempIDTable">
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" data-bs-backdrop='static' id="didUpdateModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="ModalLabel">Update DIDs</h5>
+                <button type="button" class="updateclose" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="updateDiv">
+           
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div id="didentrytable">
+    
+</div>  *@
+
+
+@section Scripts{
+    <script>
+        // function updateTempTable(){         Table inseide modal
+
+
+        //     return false;
+        //     console.log("test");
+        //     var textareaValue = $('#didtextarea').val();
+
+        //     var lines = textareaValue.split(/\r?\n/);
+        //     console.log(lines);
+        //     var stringifiedData = JSON.stringify(lines);
+        //     console.log("fnbewrjfg");
+        //     console.log(stringifiedData);
+        //     $.ajax({
+        //         url: "/Did/GenerateTempTable",
+        //         type: "POST",
+        //         contentType: "application/json; charset=utf-8",
+        //         dataType: 'html',
+        //         data: {
+        //             lines : stringifiedData
+        //         },
+        //         success: function (data) {
+        //             $("#tempIDTable").html(data);
+        //         }
+        //     });
+        // }
+
+        function loadPagination(pageNumber, pageSize) {
+            $("#paginate").bs_pagination({
+                currentPage: pageNumber + 1,
+                rowsPerPage: parseInt(pageSize),
+                maxRowsPerPage: pageSize,
+                totalRows: $('#resultCount').val(),
+                totalPages: Math.ceil($('#resultCount').val() / parseInt(pageSize)),
+                showGoToPage: false,
+                showRowsPerPage: false,
+                containerClass: "mx-4 pagination-modern", 
+                navInfoContainerClass: "mx-2 pt-sm-0 pt-2 text-nowrap",
+                visiblePageLinks: Math.ceil($('#resultCount').val()/pageSize),
+                onChangePage: function (event, data) {
+                    pageNumber = data.currentPage - 1;
+                    loadAddressList({ pageNumber: pageNumber, pageSize: 10 });
+                }
+            });
+            var result =  $('#resultCount').val();
+             console.log(result,"result");
+        }
+
+        function loadAddressList(paginationObj) {
+            var pagesize = $("#pageSize").val();
+            var did = $("#didfilter").val();
+            var city =  $("#cityfilter").val();
+            var country = $("#countryfilter").val();
+            pagesize = pagesize == null ? 10 : pagesize;
+            $.ajax({
+                url: '/Did/GetPaginatedPage',
+                method: 'POST',
+                    data: {
+                        did : did,
+                        city : city,
+                        country : country,
+                        pageNumber: paginationObj.pageNumber,
+                        pageSize: pagesize
+                    }
+            }).done(function (data) {
+                $("#didentrytable").html(data);
+                setTimeout(function () {
+                    cur_pagenumber = paginationObj.pageNumber;
+                    console.log("page_number=" + cur_pagenumber);
+                    loadPagination(paginationObj.pageNumber, pagesize);
+                }, 0);
+            });
+        }
+
+        $("body").on("change", "#pageSize", function(){
+            var size = $("#pageSize").val();
+            loadAddressList({pageNumber : 0, pageSize : size});
+        })
+        loadAddressList({pageNumber : 0, pageSize :10 });
+
+        $("#addDidBtn").click(function(){
+            $.get("/Did/AddDidPartial", function(data){
+                $("#didModal").modal("show");
+                $("#didtextareadiv").html(data);
+            })
+        })
+
+        $(".close").click(function(){
+            $("#didModal").modal("hide");
+            $("#tempIDTable").html('');
+        })
+
+        $("body").on("click", "#generaterange", function(e){
+            e.preventDefault();
+
+            var startRange = $("#startrange").val();
+            var endRange = $("#endrange").val();
+
+            let values = "";
+            for (var i = startRange; i <= endRange; i++) {
+                values += i + "\n";
+            }
+            $("#didtextarea").val(values);
+
+           var data = $("#didtextarea").val();
+           console.log(data);
+           updateTempTable();
+        })
+
+        $("body").on("change", "#didtextarea", function(){
+            console.log("the other")
+            updateTempTable();
+        })
+
+        $("body").on("click", "#saveDids", function(e){
+            e.preventDefault();
+            var table = $("#infodid");
+            var tableData = [];
+            var headers = [];
+            table.find('thead th').each(function() {
+                headers.push($(this).text().trim());
+            });
+
+            table.find('tbody tr').each(function() {
+                var rowData = {};
+                $(this).find('td').each(function(index) {
+                        var $input = $(this).find('input, select, textarea');
+                        if ($input.length > 0) {
+                            rowData[headers[index]] = $input.val();
+                        } else {
+                            rowData[headers[index]] = $(this).text().trim();
+                        }
+                });
+                tableData.push(rowData);
+            });
+            
+            $.post("/DID/SaveDIDs", {
+                data : tableData
+            },function(data)
+            {
+                $("#didModal").modal("hide");
+                $("#tempIDTable").html('');
+                loadAddressList({pageNumber : 0, pageSize :10 });
+            })
+        })
+            
+        $("body").on("click", ".delete", function(){
+            var id = $(this).data("id");
+
+            bootbox.confirm({
+                size: 'small',
+                message: 'Are you sure?',
+                callback: function (result) {
+                    $.ajax({
+                        url: '/Did/Delete',
+                        type: 'DELETE',
+                        data : {
+                            id : id
+                        },
+                        success: function (result) {
+                            loadAddressList({pageNumber : 0, pageSize :10 });
+                        }
+                    });
+                }
+            });
+            
+        })
+
+        $("body").on("click", ".update", function(){
+            var id = $(this).data("id");
+
+            $.ajax({
+            url: '/Did/UpdatePartial',
+            type: 'GET',
+            data : {
+                id : id 
+            },
+            success: function (result) {
+                $("#updateDiv").html(result);
+                $("#didUpdateModal").modal("show");
+            }
+            })
+        })
+
+        $("body").on("click", ".updateclose", function(){
+            $("#didUpdateModal").modal("hide");
+        })
+
+        $("body").on("click", "#updateDid", function(){
+            var formData = $("#updateForm").serialize();
+            console.log(formData);
+            $.ajax({
+            url: '/Did/Update',
+            type: 'PUT',
+            data : formData,
+            success: function (result) {
+                $("#DidDiv").html('');
+                $("#didModal").modal("hide");
+                loadAddressList({pageNumber : 0, pageSize :10 });
+            }
+            })
+        })
+
+        $("body").on("click", "#searchbtn", function(e){
+           e.preventDefault();
+           loadAddressList({pageNumber : 0, pageSize :10 });
+        })
+
+        $("body").on("click", "#resetFilter", function(){
+            $("#countryfilter").val('');
+            $("#didfilter").val('');
+            $("#cityfilter").val('');
+            loadAddressList({pageNumber : 0, pageSize :10 });
+        })
+    </script>
+}

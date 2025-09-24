@@ -1,0 +1,29 @@
+﻿@using KBN.Models
+@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model DIDmodal
+
+
+@if (Model != null)
+{
+    <form class="form-control" id="updateForm">
+        <input type="number" value="@Model.ID" name="Id" hidden/>
+        <input type="number" value="@Model.didNo" name="DID" class="form-control"/>
+        <bR>
+        <label for="city">City</label>
+        <br />
+        <input type="text" value="@Model.city" class="form-control" id="city" name="City"/>
+        <br />
+
+        <label for="country">Country</label>
+        <input type="text" value="@Model.country" class="form-control" id="country" name="Country" />
+        <br />
+
+        <button class="btn btn-primary" id="updateDid">Update</button>
+    </form>
+}
+else
+{
+    <p>Null agya</p>
+}

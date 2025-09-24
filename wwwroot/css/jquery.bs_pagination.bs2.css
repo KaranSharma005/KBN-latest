@@ -1,0 +1,217 @@
+/*
+DO NOT CHANGE this file, as it will be overwritten in next update.
+Write your own classes in other css file.
+*/
+
+/* Your existing custom pagination class */
+.pagination_custom {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+/* Enhanced styling for your custom pagination */
+.pagination_custom {
+    margin-top: 0;
+    margin-bottom: 0;
+    /* Additional styling options */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px 0;
+    gap: 8px;
+}
+
+    /* Style the page links within your custom pagination */
+    .pagination_custom .page-link {
+        padding: 8px 12px;
+        margin: 0 2px;
+        border: 1px solid #dee2e6;
+        border-radius: 6px;
+        color: #007bff;
+        text-decoration: none;
+        background-color: #fff;
+        transition: all 0.3s ease;
+        font-weight: 500;
+        min-width: 40px;
+        text-align: center;
+    }
+
+        /* Hover effect */
+        .pagination_custom .page-link:hover {
+            background-color: #e9ecef;
+            border-color: #007bff;
+            color: #0056b3;
+            text-decoration: none;
+        }
+
+    /* Active page styling */
+    .pagination_custom .page-item.active .page-link {
+        background-color: #007bff;
+        border-color: #007bff;
+        color: white;
+        font-weight: 600;
+    }
+
+    /* Disabled state */
+    .pagination_custom .page-item.disabled .page-link {
+        color: #6c757d;
+        background-color: #f8f9fa;
+        border-color: #dee2e6;
+        cursor: not-allowed;
+        opacity: 0.65;
+    }
+
+    /* First and last page buttons */
+    .pagination_custom .page-item:first-child .page-link {
+        border-top-left-radius: 8px;
+        border-bottom-left-radius: 8px;
+    }
+
+    .pagination_custom .page-item:last-child .page-link {
+        border-top-right-radius: 8px;
+        border-bottom-right-radius: 8px;
+    }
+
+    /* Alternative compact version */
+    .pagination_custom.compact {
+        gap: 4px;
+    }
+
+        .pagination_custom.compact .page-link {
+            padding: 6px 10px;
+            min-width: 35px;
+            font-size: 14px;
+        }
+
+    /* Alternative rounded version */
+    .pagination_custom.rounded .page-link {
+        border-radius: 20px;
+        padding: 8px 14px;
+    }
+
+    /* Alternative minimal version (no borders) */
+    .pagination_custom.minimal .page-link {
+        border: none;
+        background: transparent;
+        color: #666;
+    }
+
+        .pagination_custom.minimal .page-link:hover {
+            background-color: rgba(0, 123, 255, 0.1);
+            color: #007bff;
+        }
+
+    .pagination_custom.minimal .page-item.active .page-link {
+        background-color: #007bff;
+        color: white;
+        border-radius: 6px;
+    }
+
+    /* Dark theme version */
+    .pagination_custom.dark {
+        background-color: #343a40;
+        padding: 15px;
+        border-radius: 8px;
+    }
+
+        .pagination_custom.dark .page-link {
+            background-color: #495057;
+            border-color: #6c757d;
+            color: #fff;
+        }
+
+            .pagination_custom.dark .page-link:hover {
+                background-color: #6c757d;
+                border-color: #adb5bd;
+                color: #fff;
+            }
+
+        .pagination_custom.dark .page-item.active .page-link {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+
+/* Responsive design for mobile */
+@media (max-width: 576px) {
+    .pagination_custom {
+        gap: 4px;
+        padding: 8px 0;
+    }
+
+        .pagination_custom .page-link {
+            padding: 6px 8px;
+            font-size: 14px;
+            min-width: 32px;
+        }
+
+        /* Hide some page numbers on very small screens */
+        .pagination_custom .page-item:not(.active):not(:first-child):not(:last-child):not(.prev):not(.next) {
+            display: none;
+        }
+}
+
+/* Animation effects */
+.pagination_custom .page-link {
+    transition: all 0.2s ease-in-out;
+}
+
+    .pagination_custom .page-link:active {
+        transform: scale(0.95);
+    }
+
+/* Custom colors - you can modify these */
+.pagination_custom.blue .page-item.active .page-link,
+.pagination_custom.blue .page-link:hover {
+    background-color: #007bff;
+    border-color: #007bff;
+    color: white;
+}
+
+.rows_per_page_wrapper {
+    display: inline;
+    margin-left: 5%;
+}
+
+.small-input {
+    width: 20% !important;
+}
+
+/* Large desktop */
+@media (min-width: 1200px) {
+    .row-space {
+        margin-top: 0 !important;
+    }
+}
+
+/* Portrait tablet to landscape and desktop */
+@media (min-width: 768px) and (max-width: 979px) {
+    .row-space {
+        margin-top: 0 !important;
+    }
+}
+
+/* Landscape phone to portrait tablet */
+@media (max-width: 767px) {
+    .row-space {
+        margin-top: 15px !important;
+    }
+}
+
+/* Landscape phones and down */
+@media (max-width: 480px) {
+    .row-space {
+        margin-top: 15px !important;
+    }
+}
+/* -------------------------------------------------------------------------- */
+
+
+.pagination-modern.red .page-item.active .page-link {
+    background-color: #dc3545 !important;
+    border-color: #dc3545 !important;
+}
+
+.pagination-modern.red .page-link:hover {
+    border-color: #dc3545 !important;
+    color: #dc3545 !important;
+}

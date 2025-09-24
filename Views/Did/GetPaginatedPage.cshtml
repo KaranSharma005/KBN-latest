@@ -1,0 +1,96 @@
+﻿@using KBN.Models;
+@model List<DIDmodal>
+@Html.Hidden("resultCount", (int)ViewBag.totalDIDs)
+<style>
+    table {
+        border-collapse: separate !important;
+        border-spacing: 0 5px !important;
+    }
+
+    th,
+    td {
+        padding: 5px;
+        vertical-align: top !important;
+    }
+
+   
+</style>
+@if (Model != null)
+{
+    <div class="row row-sm">
+        <div class="col-lg-12">
+            <div class="">
+                <div class="card-header row p-2 mx-0 bg-facebook-gradient rounded-3 text-black">
+                    <div class="col-sm-8 d-flex flex-sm-row flex-column align-items-center justify-content-sm-between">
+                        <h3 class="card-title"></h3>
+                        <div id="paginate"></div>
+                    </div>
+                    <div class="col-sm d-flex flex-row align-items-center justify-content-sm-end justify-content-center">
+                        <div class="">
+                            <select id="pageSize" name="pagesize" class="form-control">
+                                <option value="10">10</option>
+                                <option value="20">20</option>
+                                <option value="50">50</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                @* <p>Total records : 30</p> *@
+
+                <div class="card-body p-0">
+                    <div class="table-responsive overflow-auto" style="max-height:440px;">
+                        <table class="table table-striped Smart-table  overflow-auto" id="dTable">
+                            <thead class="bg-primary-transparent" style="border-top: 1px solid #efefef;">
+                                <tr>
+                                    <th class="py-2 fw-bold  rounded-start">DID</th>
+                                    <th class="py-2 fw-bold ">City</th>
+                                    <th class="py-2 fw-bold ">Country</th>
+                                    <th class="py-2 fw-bold ">Request Id</th>
+                                    <th class="py-2 fw-bold ">Linked Subscriber</th>
+                                    <th class="py-2 fw-bold ">DID status</th>
+                                    <th class="py-2 fw-bold ">Message</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in @Model)
+                                {
+                                    <tr class="bg-light shadow-sm">
+                                        <td class="py-2 rounded-start">
+                                            @item.didNo
+                                        </td>
+                                        <td class="py-2">
+                                            @item.city
+                                        </td>
+                                        <td class="py-2">
+                                            @item.country
+                                        </td>
+                                        <td class="py-2">
+                                            -
+                                        </td>
+                                        <td class="py-2">
+                                            -
+                                        </td>
+                                        <td class="py-2">
+                                            -
+                                        </td>
+                                        <td>
+                                            <i class="bi bi-trash delete" data-id="@item.ID"></i>
+                                            <i class="bi bi-pencil update" data-id="@item.ID"></i>
+                                        </td>
+                                    </tr>
+                                }
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<script>
+    $(document).ready(function () {
+        $("#pageSize").val('@ViewBag.PageSize');
+    })
+</script>
