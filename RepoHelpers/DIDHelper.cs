@@ -127,6 +127,9 @@ namespace KBN.RepoHelpers
                 using (var connection = new SqlConnection(_connectionString))
                 {
                     connection.Execute("update did_main set isvoid = '0', deleted_At = GETDATE() where id = @id", new { id });
+                    connection.Execute("update didSubscriberMap set is_void = '1', unlink_at = @time where did_id = @id", new { id, time = DateTime.Now });
+                    long DID = connection.QuerySingleOrDefault<long>("select didno from did_main where id = @id", new { id });
+                    connection.Execute("update DBaliases set deleted_at = @time, is_void = '1' where alias_username = @DID", new { time = DateTime.Now, DID });
                 }
 
             }
@@ -166,7 +169,9 @@ namespace KBN.RepoHelpers
                     }
                     else
                     {
+                        long DID = connection.QuerySingleOrDefault<long>("select didno from did_main where id = @id and isVoid = '1'", new { id = modal.Id});
                         connection.Execute("update did_main set didno = @did, city = @city, country = @country where id = @id", new { did = modal.DID, city = modal.City, country = modal.Country, id = modal.Id });
+                        connection.Execute("update DBaliases set alias_username = @newDID where alias_username = @DID and is_void = '0'", new { newDID = modal.DID, DID });
                     }
                 }
             }
@@ -192,18 +197,21 @@ namespace KBN.RepoHelpers
                 using (var connection = new SqlConnection(_connectionString))
                 {
                     return connection.Query<DIDmodal>(@"
-                                        select * from did_main
-                                        where isvoid = 1
-                                        and (@didno is null or didno = @didno)
-                                        and (@country is null or country like '%' + @country + '%')
-                                        and (@city is null or city like '%' + @city + '%')
-                                        ORDER BY didno
+                                        select 
+                                        a.id, a.didno, a.city, a.isVoid, a.country, a.numberType, a.created_by, c.username
+                                        from did_main a
+                                        left join didSubscriberMap b 
+                                        on a.id = b.did_id 
+                                        and b.is_void = 0   
+                                        left join subscriber c    
+                                        on b.sub_id = c.id 
+                                        where a.isvoid = '1'
+                                        ORDER BY a.didno
                                         OFFSET (@PageNumber * @PageSize) ROWS
                                         FETCH NEXT @PageSize ROWS ONLY
                                         ",
                                         new { didno = modal.did, country = modal.country, city = modal.city, PageNumber = modal.pageNumber, PageSize = modal.pageSize }
                                         ).ToList();
-
                 }
             }
             catch (Exception ex)
@@ -219,7 +227,7 @@ namespace KBN.RepoHelpers
             {
                 using (var connection = new SqlConnection(_connectionString))
                 {
-                    return connection.ExecuteScalar<int>("SELECT COUNT(*) FROM did_main");  
+                    return connection.ExecuteScalar<int>("SELECT COUNT(*) FROM did_main");
                 }
             }
             catch (Exception ex)

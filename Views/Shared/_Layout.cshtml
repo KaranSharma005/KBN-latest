@@ -35,9 +35,11 @@
                 <nav class="nav flex-column px-3">
                     @if (SignInManager.IsSignedIn(User))
                     {
-                        <a class="nav-link active" asp-controller="Did" asp-action="DIDs">DIDs</a>
-                        <a class="nav-link" asp-controller="About" asp-action="Index">About</a>
-                    }
+                        <a class="nav-link" asp-controller="Did" asp-action="DIDs">DIDs</a>
+                        <a class="nav-link" asp-controller="Subscriber" asp-action="Dashboard">Subscriber</a>
+                        <a class="nav-link" asp-controller="Links" asp-action="Dashboard">DID-Links</a>
+                        <a class="nav-link" asp-controller="Links" asp-action="Alias">DID-Aliases</a>
+                }
                 </nav>
         </div>
         }
@@ -68,6 +70,7 @@
         <script src="~/js/jquery.bs_pagination.js"></script>
         <script src="~/js/en.min.js"></script>
 
+        @await Component.InvokeAsync("Notyf")
 
         @await RenderSectionAsync("Scripts", required: false)
     </body>

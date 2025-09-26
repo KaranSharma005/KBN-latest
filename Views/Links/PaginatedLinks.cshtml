@@ -1,6 +1,6 @@
 ﻿@using KBN.Models;
-@model List<DIDmodal>
-@Html.Hidden("resultCount", (int)ViewBag.totalDIDs)
+@model List<PaginatedLinkModal>
+@Html.Hidden("resultCount", (int)ViewBag.totalLinks)
 <style>
     table {
         border-collapse: separate !important;
@@ -13,7 +13,6 @@
         vertical-align: top !important;
     }
 
-   
 </style>
 @if (Model != null)
 {
@@ -35,56 +34,37 @@
                         </div>
                     </div>
                 </div>
-                @* <p>Total records : 30</p> *@
 
                 <div class="card-body p-0">
                     <div class="table-responsive overflow-auto" style="max-height:440px;">
                         <table class="table table-striped Smart-table  overflow-auto" id="dTable">
                             <thead class="bg-primary-transparent" style="border-top: 1px solid #efefef;">
                                 <tr>
-                                    <th class="py-2 fw-bold  rounded-start">DID</th>
-                                    <th class="py-2 fw-bold ">City</th>
-                                    <th class="py-2 fw-bold ">Country</th>
-                                    <th class="py-2 fw-bold ">Request Id</th>
-                                    <th class="py-2 fw-bold ">Linked Subscriber</th>
-                                    <th class="py-2 fw-bold ">DID status</th>
-                                    <th class="py-2 fw-bold ">Message</th>
+                                    <th class="py-2 fw-bold ">DID</th>
+                                    <th class="py-2 fw-bold ">Subscriber Name</th>
+                                    <th class="py-2 fw-bold ">Linked At</th>
+                                    <th class="py-2 fw-bold ">Linked By</th>
+                                    <th class="py-2 fw-bold ">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach (var item in @Model)
                                 {
                                     <tr class="bg-light shadow-sm">
-                                        <td class="py-2 rounded-start">
+                                        <td class="py-2">
                                             @item.didNo
                                         </td>
                                         <td class="py-2">
-                                            @item.city
+                                            @item.username
                                         </td>
                                         <td class="py-2">
-                                            @item.country
+                                            @item.linked_at
                                         </td>
                                         <td class="py-2">
-                                            -
-                                        </td>
-                                        @if(item.username != null)
-                                        {
-                                            <td class="py-2">
-                                                @item.username
-                                            </td>
-                                        }
-                                        else
-                                        {
-                                            <td class="py-2">
-                                                -
-                                            </td>
-                                        }
-                                        <td class="py-2">
-                                            -
+                                            @item.linked_by
                                         </td>
                                         <td>
-                                            <i class="bi bi-trash delete" data-id="@item.ID"></i>
-                                            <i class="bi bi-pencil update" data-id="@item.ID"></i>
+                                            <button class="btn btn-primary unlinkBtn" data-id="@item.id">Unlink</button>
                                         </td>
                                     </tr>
                                 }

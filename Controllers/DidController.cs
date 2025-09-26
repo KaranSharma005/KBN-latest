@@ -25,7 +25,7 @@ namespace KBN.Controllers
             _didhelper = didhelper;
             _notyf = notyf;
             _userManager = userManager;
-            _signInManager = signInManager;
+            _signInManager = signInManager; 
         }
 
         public ActionResult DIDs()
@@ -56,7 +56,7 @@ namespace KBN.Controllers
         [HttpGet]
         public IActionResult UpdatePartial(int id)
         {
-            _notyf.Success("Success");
+            //_notyf.Success("Success");
             return PartialView(_didhelper.GetDetailsToUpdate(id));
         }
 
@@ -78,8 +78,8 @@ namespace KBN.Controllers
         public IActionResult Delete(double id)
         {
             _didhelper.Delete(id);
-            _notyf.Success("Success");
-            return Json("Deleted Successfully");
+            //_notyf.Success("Success");
+             return Json("Deleted Successfully");
         }
     }
 }

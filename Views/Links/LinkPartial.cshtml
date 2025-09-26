@@ -1,0 +1,30 @@
+﻿
+@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+@model List<SelectListItem>
+<div class="card border-0 shadow-lg rounded-4">
+    <div class="card-body">
+        <form id="linkForm" class="form-control">
+            <div class="form-floating mb-2">
+                <input id="didNo" class="form-control rounded-3" type="number" name="didNo" required />
+                <label for="didNo">DID No</label>
+            </div>
+
+            @* <div class="form-floating mb-2">
+                <input type="text" id="sub_username" class="form-control rounded-3" name="sub_username" required />
+                <label for="sub_username">Subscriber Username</label>
+            </div> *@
+
+            @Html.DropDownList(
+            "sub_id",
+            Model,       
+            "Select a Subscriber name",
+            new { @class = "form-control" } 
+            )
+
+            <button type="submit" class="btn btn-primary float-end mt-4" id="linkSubmitBtn">Link</button>
+        </form>
+    </div>
+</div>

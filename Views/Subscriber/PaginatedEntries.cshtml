@@ -1,6 +1,10 @@
-﻿@using KBN.Models;
-@model List<DIDmodal>
-@Html.Hidden("resultCount", (int)ViewBag.totalDIDs)
+﻿
+@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@using KBN.Models;
+@model List<SubscriberTableModal>
+@Html.Hidden("resultCount", (int)ViewBag.totalEntries)
 <style>
     table {
         border-collapse: separate !important;
@@ -35,20 +39,18 @@
                         </div>
                     </div>
                 </div>
-                @* <p>Total records : 30</p> *@
 
                 <div class="card-body p-0">
                     <div class="table-responsive overflow-auto" style="max-height:440px;">
                         <table class="table table-striped Smart-table  overflow-auto" id="dTable">
                             <thead class="bg-primary-transparent" style="border-top: 1px solid #efefef;">
                                 <tr>
-                                    <th class="py-2 fw-bold  rounded-start">DID</th>
-                                    <th class="py-2 fw-bold ">City</th>
-                                    <th class="py-2 fw-bold ">Country</th>
-                                    <th class="py-2 fw-bold ">Request Id</th>
-                                    <th class="py-2 fw-bold ">Linked Subscriber</th>
-                                    <th class="py-2 fw-bold ">DID status</th>
-                                    <th class="py-2 fw-bold ">Message</th>
+                                    <th class="py-2 fw-bold ">UserName</th>
+                                    <th class="py-2 fw-bold ">Password</th>
+                                    <th class="py-2 fw-bold ">Customer Name</th>
+                                    <th class="py-2 fw-bold ">Created By</th>
+                                    <th class="py-2 fw-bold ">Created At</th>
+                                    <th class="py-2 fw-bold ">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -56,35 +58,36 @@
                                 {
                                     <tr class="bg-light shadow-sm">
                                         <td class="py-2 rounded-start">
-                                            @item.didNo
+                                            @item.username
                                         </td>
                                         <td class="py-2">
-                                            @item.city
+                                            @{
+                                                var decryptedPassword = AesEncryption.Decrypt(item.password_hash);
+                                            }
+
+                                            <span class="password-text" data-password="@decryptedPassword">••••••••</span>
+                                            <i class="bi bi-eye ms-2 toggle-password" style="cursor:pointer;"></i>
                                         </td>
-                                        <td class="py-2">
-                                            @item.country
-                                        </td>
-                                        <td class="py-2">
-                                            -
-                                        </td>
-                                        @if(item.username != null)
+
+
+                                        @if (@item.customer_name != null)
                                         {
-                                            <td class="py-2">
-                                                @item.username
-                                            </td>
+                                            <td>@item.customer_name</td>
                                         }
                                         else
                                         {
-                                            <td class="py-2">
-                                                -
-                                            </td>
+                                            <td>-</td>
                                         }
+
                                         <td class="py-2">
-                                            -
+                                            @item.recorded_by
+                                        </td>
+                                        <td class="py-2">
+                                            @item.recorded_at
                                         </td>
                                         <td>
-                                            <i class="bi bi-trash delete" data-id="@item.ID"></i>
-                                            <i class="bi bi-pencil update" data-id="@item.ID"></i>
+                                            <i class="bi bi-trash delete" data-id="@item.id"></i>
+                                            <i class="bi bi-pencil update" data-id="@item.id"></i>
                                         </td>
                                     </tr>
                                 }

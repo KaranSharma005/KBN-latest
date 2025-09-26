@@ -1,0 +1,33 @@
+﻿
+@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@using KBN.Models;
+@model UpdateSubscriber
+@if (Model != null)
+{
+    <div class="card border-0 shadow-lg rounded-4">
+        <div class="card-body">
+            <form id="updateForm" class="form-control">
+                <div>
+                    <input id="id" class="form-control rounded-3" type="text" name="id" value="@Model.id" hidden />
+                </div>
+                <div class="form-floating mb-2">
+                    <input id="username" class="form-control rounded-3" type="text" name="username" value="@Model.username" required />
+                    <label for="username">Username</label>
+                </div>
+
+                <div class="form-floating mb-2">
+                    <input id="password" class="form-control rounded-3" value="@(AesEncryption.Decrypt(Model.password_hash))" name="password_hash" minlength="8" maxlength="20" required />
+                    <label for="password">Password</label>
+                </div>
+                    <div class="form-floating mb-2">
+                        <input id="customer_name" class="form-control rounded-3" value="@Model.customer_name" type="text" name="customer_name" required />
+                        <label for="customer_name">Customer Name</label>
+                    </div>
+
+                <button type="submit" class="btn btn-primary float-end mt-4" id="updateFormBtn">Update</button>
+            </form>
+        </div>
+    </div>
+}

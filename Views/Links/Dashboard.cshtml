@@ -1,0 +1,142 @@
+﻿
+
+<button class="btn btn-primary float-end" id="addLinkBtbn">Link DIDs</button>
+
+<div id="filter-div">
+    <div class="row mb-3">
+        <div class="col mb-3 d-flex gap-2">
+            <input type="text" placeholder="DID..." class="form-control" id="didfilter" />
+            <input type="text" placeholder="Subscriber Name..." class="form-control" id="subscriberfilter" />
+            <button type="submit" class="btn btn-primary" id="searchbtn">Search</button>
+            <button class="btn btn-danger" id="resetFilter">Reset</button>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" data-bs-backdrop='static' id="linkModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="ModalLabel">Link DID</h5>
+                <button type="button" class="closeLinkModal" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div id="linkFormArea">
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="linkTable">
+
+</div>
+
+@section Scripts {
+    <script>
+        function loadPagination(pageNumber, pageSize) {
+            $("#paginate").bs_pagination({
+                currentPage: pageNumber + 1,
+                rowsPerPage: parseInt(pageSize),
+                maxRowsPerPage: pageSize,
+                totalRows: $('#resultCount').val(),
+                totalPages: Math.ceil($('#resultCount').val() / parseInt(pageSize)),
+                showGoToPage: false,
+                showRowsPerPage: false,
+                containerClass: "mx-4 pagination-modern",
+                navInfoContainerClass: "mx-2 pt-sm-0 pt-2 text-nowrap",
+                visiblePageLinks: 3,
+                onChangePage: function (event, data) {
+                    pageNumber = data.currentPage - 1;
+                    loadAddressList({ pageNumber: pageNumber, pageSize: 10 });
+                }
+            });
+            var result =  $('#resultCount').val();
+        }
+
+        function loadAddressList(paginationObj) {
+            var pagesize = $("#pageSize").val();
+            var did = $("#didfilter").val();
+            var subscribername =  $("#subscriberfilter").val();
+            pagesize = pagesize == null ? 10 : pagesize;
+            $.ajax({
+                url: '/Links/PaginatedLinks',
+                method: 'POST',
+                    data: {
+                        pageNumber: paginationObj.pageNumber,
+                        pageSize: pagesize,
+                        did : did,
+                        subscriber : subscribername,
+                    }
+            }).done(function (data) {
+                $("#linkTable").html(data);
+                setTimeout(function () {
+                    cur_pagenumber = paginationObj.pageNumber;
+                    console.log("page_number=" + cur_pagenumber);
+                    loadPagination(paginationObj.pageNumber, pagesize);
+                }, 0);
+            });
+        }
+        loadAddressList({pageNumber : 0, pageSize :10 });
+
+        $("body").on("click", "#searchbtn", function(){
+           loadAddressList({pageNumber : 0, pageSize :10 });
+        })
+
+        $("body").on("click", "#resetFilter", function(){
+            $("#didfilter").val('');
+            $("#subscriberfilter").val('');
+            loadAddressList({pageNumber : 0, pageSize :10 });
+        })
+
+        $("#addLinkBtbn").on("click", function(){
+            $.get("/Links/LinkPartial", function(data)
+            {
+                    $("#linkFormArea").html(data);
+                    $("#linkModal").modal("show");
+            })
+        })
+
+        $("body").on("click", "#linkSubmitBtn", function(e)
+        {
+            e.preventDefault();
+            console.log("gfu");
+            var data = $("#linkForm").serialize();
+            console.log(data);
+            $.post("/Links/AddLink",data = data, function(data){
+                if(data.message){
+                    console.log(data.message);
+                    $('#linkSubmitBtn').next('.error-message').remove();
+                    $(`<p class="text-danger error-message">${data.message}</p>`).insertAfter('#linkSubmitBtn');
+                }
+                else{
+                    $("#linkModal").modal("hide");
+                    loadAddressList({pageNumber : 0, pageSize :10 });
+                }
+            })
+        })
+
+        $("body").on("click", ".unlinkBtn", function()
+        {
+            const id = $(this).data("id");
+            
+            bootbox.confirm({
+                size: 'small',
+                message: 'Are you sure?',
+                callback: function (result) {
+                    if(result) {
+                        $.post("/Links/UnlinkSubscriber", {id : id},function()
+                        {
+                            loadAddressList({pageNumber : 0, pageSize :10 });
+                        })
+                    }
+                }
+            });
+        })
+
+        $(".closeLinkModal").click(function(){
+            $("#linkModal").modal("hide");
+        })
+    </script>
+}

@@ -17,6 +17,7 @@ namespace KBN.Models
         public string country { get; set; }
         public string numberType { get; set; }
         public string created_by { get; set; }
+        public string username { get; set; }
     }
 
 

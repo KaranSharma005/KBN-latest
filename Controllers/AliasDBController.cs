@@ -2,9 +2,9 @@
 
 namespace KBN.Controllers
 {
-    public class AboutController : Controller
+    public class AliasDBController : Controller
     {
-        public IActionResult Index()
+        public IActionResult Dashboard()
         {
             return View();
         }

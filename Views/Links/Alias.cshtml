@@ -1,0 +1,86 @@
+﻿
+
+<div id="filter-div">
+    <div class="row mb-3">
+        <div class="col mb-3 d-flex gap-2">
+            <input type="text" placeholder="Subscriber..." class="form-control" id="subscriberfilter" />
+            <input type="text" placeholder="DID..." class="form-control" id="didfilter" />
+            <button type="submit" class="btn btn-primary" id="searchbtn">Search</button>
+            <button class="btn btn-danger" id="resetFilter">Reset</button>
+        </div>
+    </div>
+</div>
+<div id="didAliasTable">
+
+</div>
+
+@section Scripts {
+    <script>
+
+        function loadPagination(pageNumber, pageSize) {
+            $("#paginate").bs_pagination({
+                currentPage: pageNumber + 1,
+                rowsPerPage: parseInt(pageSize),
+                maxRowsPerPage: pageSize,
+                totalRows: $('#resultCount').val(),
+                totalPages: Math.ceil($('#resultCount').val() / parseInt(pageSize)),
+                showGoToPage: false,
+                showRowsPerPage: false,
+                containerClass: "mx-4 pagination-modern",
+                navInfoContainerClass: "mx-2 pt-sm-0 pt-2 text-nowrap",
+                visiblePageLinks: 3,
+                onChangePage: function (event, data) {
+                    pageNumber = data.currentPage - 1;
+                    loadAddressList({ pageNumber: pageNumber, pageSize: 10 });
+                }
+            });
+            var result =  $('#resultCount').val();
+             console.log(result,"result");
+        }
+
+        function loadAddressList(paginationObj) {
+            var pagesize = $("#pageSize").val();
+            var subscribername = $("#subscriberfilter").val();
+            var did =  $("#didfilter").val();
+            pagesize = pagesize == null ? 10 : pagesize;
+            $.ajax({
+                url: '/Links/AliasPartial',
+                method: 'POST',
+                    data: {
+                        pageNumber: paginationObj.pageNumber,
+                        pageSize: pagesize,
+                        username : subscribername,
+                        did : did
+                    }
+            }).done(function (data) {
+                console.log(data);
+                $("#didAliasTable").html(data);
+                setTimeout(function () {
+                    cur_pagenumber = paginationObj.pageNumber;
+                    console.log("page_number=" + cur_pagenumber);
+                    loadPagination(paginationObj.pageNumber, pagesize);
+                }, 0);
+            });
+        }
+        loadAddressList({pageNumber : 0, pageSize :10 });
+
+        $(document).ready(function()
+        {
+            $.get("/Links/AliasPartial",function(data)
+            {
+                $("#didAliasTable").html(data);
+            })
+        })
+
+        $("body").on("click", "#searchbtn", function(e){
+           e.preventDefault();
+           loadAddressList({pageNumber : 0, pageSize :10 });
+        })
+
+        $("body").on("click", "#resetFilter", function(){
+            $("#subscriberfilter").val('');
+            $("#didfilter").val('');
+            loadAddressList({pageNumber : 0, pageSize :10 });
+        })
+    </script>
+}

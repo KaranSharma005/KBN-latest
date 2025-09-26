@@ -1,0 +1,210 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+<button class="btn btn-primary float-end" id="addSubBtn">Add Subscriber</button>
+
+<div class="modal fade" data-bs-backdrop='static' id="subscriberModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="ModalLabel">Subscriber Info</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="subscriberForm">
+            </div>
+
+            <div class="modal-body" id="updatedForm"></div>
+        </div>
+    </div>
+</div>
+
+<div id="filter-div">
+    <div class="row mb-3">
+        <div class="col mb-3 d-flex gap-2">
+            <input type="text" placeholder="Username..." class="form-control" id="usernamefilter" />
+            <input type="text" placeholder="Created By..." class="form-control" id="createdbyfilter" />
+            <button type="submit" class="btn btn-primary" id="searchbtn">Search</button>
+            <button class="btn btn-danger" id="resetFilter">Reset</button>
+        </div>
+    </div>
+</div>
+
+<div id="subscribertable">
+</div>
+
+
+@section Scripts {
+    <script>
+        function loadPagination(pageNumber, pageSize) {
+            $("#paginate").bs_pagination({
+                currentPage: pageNumber + 1,
+                rowsPerPage: parseInt(pageSize),
+                maxRowsPerPage: pageSize,
+                totalRows: $('#resultCount').val(),
+                totalPages: Math.ceil($('#resultCount').val() / parseInt(pageSize)),
+                showGoToPage: false,
+                showRowsPerPage: false,
+                containerClass: "mx-4 pagination-modern",
+                navInfoContainerClass: "mx-2 pt-sm-0 pt-2 text-nowrap",
+                visiblePageLinks: 3,
+                onChangePage: function (event, data) {
+                    pageNumber = data.currentPage - 1;
+                    loadAddressList({ pageNumber: pageNumber, pageSize: 10 });
+                }
+            });
+            var result =  $('#resultCount').val();
+             console.log(result,"result");
+        }
+
+        function loadAddressList(paginationObj) {
+            var pagesize = $("#pageSize").val();
+            var username = $("#usernamefilter").val();
+            var createdby =  $("#createdbyfilter").val();
+            pagesize = pagesize == null ? 10 : pagesize;
+            $.ajax({
+                url: '/Subscriber/PaginatedEntries',
+                method: 'POST',
+                    data: {
+                        pageNumber: paginationObj.pageNumber,
+                        pageSize: pagesize,
+                        username : username,
+                        createdby : createdby,
+                    }
+            }).done(function (data) {
+                console.log(data);
+                $("#subscribertable").html(data);
+                setTimeout(function () {
+                    cur_pagenumber = paginationObj.pageNumber;
+                    console.log("page_number=" + cur_pagenumber);
+                    loadPagination(paginationObj.pageNumber, pagesize);
+                }, 0);
+            });
+        }
+        loadAddressList({pageNumber : 0, pageSize :10 });
+
+        $("#addSubBtn").click(function(){
+            $.get("/Subscriber/SubPartial", function(data){
+                $("#updatedForm").html('');
+                $("#subscriberForm").html(data);
+                $("#subscriberModal").modal("show");
+            })
+        })
+
+        $("#subscriberForm").on("submit", function(e){
+            e.preventDefault();
+            let username = $("#username").val();
+            let password = $("#password").val();
+            let customername = $("#customer_name").val();
+
+            $.post("/Subscriber/AddSub", {
+                username,
+                password,
+                customername
+            }, function(data){
+                console.log(data);
+                if(data.status == false){
+                    console.log("Not a unique username");
+                    $('#username').next('.error-message').remove();
+                    $('<p class="text-danger error-message">Please enter a unique username</p>').insertAfter('#username');
+                }
+                if(data.isCompleted){
+                    $("#subscriberModal").modal("hide");
+                    $("#subscriberForm").html('');
+                    loadAddressList({pageNumber : 0, pageSize :10 });
+                }
+            });
+        });
+
+        $(".close").click(function(){
+            $("#updatedForm").html('');
+            $("#subscriberForm").html('');
+            $("#subscriberModal").modal("hide");
+        })
+
+        $("body").on("input", "#username", function(){
+            $('#username').next('.error-message').remove();
+        })
+
+        $(document).on("click", ".toggle-password", function () {
+            let icon = $(this);
+            let span = icon.siblings(".password-text");
+
+            if (span.text() === "••••••••") {
+                span.text(span.data("password"));
+                icon.removeClass("bi-eye").addClass("bi-eye-slash");
+            } else {
+                span.text("••••••••");
+                icon.removeClass("bi-eye-slash").addClass("bi-eye");
+            }
+        });
+
+        $("body").on("click", "#searchbtn", function(e){
+           e.preventDefault();
+           loadAddressList({pageNumber : 0, pageSize :10 });
+        })
+
+        $("body").on("click", "#resetFilter", function(){
+            $("#usernamefilter").val('');
+            $("#createdbyfilter").val('');
+            loadAddressList({pageNumber : 0, pageSize :10 });
+        })
+
+        $("body").on("click", ".delete", function(){
+            const id = $(this).data("id");
+            bootbox.confirm({
+                size: 'small',
+                message: 'Are you sure?',
+                callback: function (result) {
+                    if(result){
+                        $.ajax({
+                            url: '/Subscriber/Delete',
+                            type: 'DELETE',
+                            data : {
+                                id : id
+                            },
+                            success: function() {
+                                loadAddressList({pageNumber : 0, pageSize :10 });
+                            },
+                        }); 
+                    }
+                }
+            });
+        })
+
+        $("body").on("click", ".update", function(){
+            const id = $(this).data("id");
+            $.get("/Subscriber/UpdatePartial", {    
+                id : id
+            },
+                function(data){
+                $("subscriberForm").html('');
+                $("#updatedForm").html(data);
+                $("#subscriberModal").modal("show");
+            })
+        })
+
+        $("body").on("click", "#updateFormBtn", function(e){
+            e.preventDefault();
+            var formData = $("#updateForm").serialize();
+            console.log(formData);
+            $.post("/Subscriber/Update",
+            data = formData,
+            function(data){
+                if(data.status == false){
+                    console.log("Customer with this name ca't be renamed");
+                    $('#customer_name').next('.error-message').remove();
+                    $('<p class="text-danger error-message">This name can not be renamed</p>').insertAfter('#customer_name');
+                }
+                else{
+                    $("#subscriberModal").modal("hide");
+                    loadAddressList({pageNumber : 0, pageSize :10 });
+                }
+                // console.log(data);
+            })
+        })
+    </script>
+}
